@@ -1,0 +1,73 @@
+.menu-page {
+  display: flex;
+  flex-direction: row;
+}
+
+.category-section {
+  width: 20%; /* adjust the width as needed */
+  margin-right: 15px; /* add some margin between the list and the product cards */
+}
+
+.product-list {
+  width: 80%; /* adjust the width as needed */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.product-list > * {
+  margin: 20px; /* add some margin between the product cards */
+}
+
+button {
+  margin: 10px 0;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  margin-bottom: 10px;
+}
+
+input[type="text"],
+input[type="file"] {
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}

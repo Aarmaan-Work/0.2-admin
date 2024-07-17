@@ -1,0 +1,23 @@
+/* components/CategoryList.css */
+
+.category-list {
+  overflow-y: auto;
+  max-height: calc(100vh - 100px);
+  width: 200px;
+  border-right: 1px solid #ccc;
+  margin-top: 20%;
+}
+
+.category-item {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.category-item:hover {
+  background-color: #f0f0f0;
+}
+
+.category-item.selected {
+  font-weight: bold;
+  background-color: #e0e0e0;
+}
