@@ -1,61 +1,57 @@
 import React, { useState, useEffect } from "react";
-import { database } from "../api/Appwrite";
 import CategoryList from "../components/CategoryList";
 import CategoryFormModal from "../components/CategoryFormModal";
 import ProductCard from "../components/ProductCard";
+import {
+  loadCategories,
+  createCategory,
+  loadCategoryProducts,
+} from "../api/Appwrite";
 import "./MenuPage.css";
 
-const testProducts = [
-  {
-    id: 1,
-    image: "https://via.placeholder.com/150",
-    title: "Product 1",
-    description: "Description for Product 1",
-    cost: 29.99,
-  },
-  {
-    id: 2,
-    image: "https://via.placeholder.com/150",
-    title: "Product 2",
-    description: "Description for Product 2",
-    cost: 39.99,
-  },
-  {
-    id: 3,
-    image: "https://via.placeholder.com/150",
-    title: "Product 3",
-    description: "Description for Product 3",
-    cost: 49.99,
-  },
-  {
-    id: 3,
-    image: "https://via.placeholder.com/150",
-    title: "Product 3",
-    description: "Description for Product 3",
-    cost: 49.99,
-  },
-];
-
 const MenuPage = () => {
-  const [selectedCategory, setSelectedCategory] = useState(0);
-  const [categoryData, setCategoryData] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [categoryData, setCategoryData] = useState([]);
+  const [productData, setProductData] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const fetchDocuments = async () => {
-      try {
-        const result = await database.listDocuments(
-          "660bd50069d33a8c5123",
-          "categories"
-        );
-        setCategoryData(result.documents);
-      } catch (error) {
-        console.error("Error fetching documents:", error);
-      }
-    };
-
-    fetchDocuments();
+    fetchCategories();
   }, []);
+
+  useEffect(() => {
+    if (selectedCategory) {
+      fetchCategoryProducts(selectedCategory);
+    }
+  }, [selectedCategory]);
+
+  const fetchCategories = async () => {
+    try {
+      setLoading(true);
+      const categories = await loadCategories();
+      setCategoryData(categories);
+      if (categories.length > 0) {
+        setSelectedCategory(categories[0].title);
+      }
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchCategoryProducts = async (categoryId) => {
+    try {
+      setLoading(true);
+      const products = await loadCategoryProducts(categoryId);
+      setProductData(products);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleCategorySelect = (categoryId) => {
     setSelectedCategory(categoryId);
@@ -71,13 +67,15 @@ const MenuPage = () => {
 
   const handleCategorySubmit = async (newCategory) => {
     try {
-      const result = await database.createCategory(
-        newCategory.name,
-        newCategory.image
-      );
-      setCategoryData([...categoryData, result]);
+      setLoading(true);
+      const result = await createCategory(newCategory.name, newCategory.image);
+      setCategoryData((prevCategoryData) => [...prevCategoryData, result]);
+      setIsModalOpen(false);
+      console.log("Category added successfully:", result);
     } catch (error) {
       console.error("Error adding category:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -89,17 +87,19 @@ const MenuPage = () => {
           categories={categoryData}
           selectedCategory={selectedCategory}
           onCategorySelect={handleCategorySelect}
+          loading={loading}
         />
       </div>
       <div className="product-list">
-        {testProducts.map((product) => (
-          <ProductCard key={product.id} product={product} />
+        {productData.map((product) => (
+          <ProductCard key={product.product_id} product={product} />
         ))}
       </div>
       <CategoryFormModal
         isOpen={isModalOpen}
         onClose={handleModalClose}
         onSubmit={handleCategorySubmit}
+        loading={loading}
       />
     </div>
   );

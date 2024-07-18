@@ -5,21 +5,20 @@ import "./CategoryList.css";
 
 const CategoryList = ({ categories, selectedCategory, onCategorySelect }) => {
   if (!categories) {
-    // Handle loading state or empty state if categories are null
-    return <div>Loading categories...</div>; // Example: Show loading message
+    return <div>Loading categories...</div>; // Handle loading state
   }
 
   return (
     <div className="category-list">
       {categories.map((category) => (
         <div
-          key={category.$id} // Assuming $id is the unique identifier from Appwrite
+          key={category.category_id} // Ensure category_id is unique and correctly used
           className={`category-item ${
-            category.$id === selectedCategory ? "selected" : ""
+            category.category_id === selectedCategory ? "selected" : ""
           }`}
-          onClick={() => onCategorySelect(category.$id)}
+          onClick={() => onCategorySelect(category.category_id)}
         >
-          {category.Name} {/* Adjust based on your actual document structure */}
+          {category.title} {/* Display the category title */}
         </div>
       ))}
     </div>

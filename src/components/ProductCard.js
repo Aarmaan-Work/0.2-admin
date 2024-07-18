@@ -4,7 +4,7 @@ import "./ProductCard.css";
 
 const ProductCard = ({ product }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [cost, setCost] = useState(product.cost);
+  const [cost, setCost] = useState(product.price);
 
   const handleCostChange = () => {
     setIsEditing(true);
@@ -21,12 +21,19 @@ const ProductCard = ({ product }) => {
 
   return (
     <div className="product-card">
-      <img src={product.image} alt={product.title} className="product-image" />
-      <Link to={`/edit-product/${product.id}`} className="edit-product-button">
+      <img
+        src={product.image_uri}
+        alt={product.title}
+        className="product-image"
+      />
+      <Link
+        to={`/edit-product/${product.product_id}`}
+        className="edit-product-button"
+      >
         Edit
       </Link>
       <div className="product-details">
-        <h2 className="product-title">{product.title}</h2>
+        <h2 className="product-title">{product.name}</h2>
         <p className="product-description">{product.description}</p>
       </div>
       <div className="product-cost-container">
