@@ -4,7 +4,7 @@ import "./ProductCard.css";
 
 const ProductCard = ({ product }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [cost, setCost] = useState(product.price);
+  const [cost, setCost] = useState(product.price || 0);
 
   const handleCostChange = () => {
     setIsEditing(true);
@@ -23,7 +23,7 @@ const ProductCard = ({ product }) => {
     <div className="product-card">
       <img
         src={product.image_uri}
-        alt={product.title}
+        alt={product.name}
         className="product-image"
       />
       <Link

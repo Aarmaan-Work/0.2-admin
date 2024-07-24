@@ -1,18 +1,15 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import CategoryList from "../components/CategoryList";
 import CategoryFormModal from "../components/CategoryFormModal";
 import ProductCard from "../components/ProductCard";
-import {
-  loadCategories,
-  createCategory,
-  loadCategoryProducts,
-} from "../api/Appwrite";
+import { loadCategories, loadProductsByCategory } from "../api/Appwrite";
 import "./MenuPage.css";
 
 const MenuPage = () => {
+  const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [categoryData, setCategoryData] = useState([]);
-  const [productData, setProductData] = useState([]);
+  const [products, setProducts] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -20,41 +17,26 @@ const MenuPage = () => {
     fetchCategories();
   }, []);
 
-  useEffect(() => {
-    if (selectedCategory) {
-      fetchCategoryProducts(selectedCategory);
-    }
-  }, [selectedCategory]);
-
   const fetchCategories = async () => {
     try {
-      setLoading(true);
-      const categories = await loadCategories();
-      setCategoryData(categories);
-      if (categories.length > 0) {
-        setSelectedCategory(categories[0].title);
+      const categoriesData = await loadCategories();
+      setCategories(categoriesData);
+      if (categoriesData.length > 0) {
+        setSelectedCategory(categoriesData[0].category_id); // Use category_id here
+        fetchProducts(categoriesData[0].category_id); // Use category_id here
       }
     } catch (error) {
-      console.error("Error fetching categories:", error);
-    } finally {
-      setLoading(false);
+      console.log("Error fetching categories: ", error);
     }
   };
 
-  const fetchCategoryProducts = async (categoryId) => {
+  const fetchProducts = async (categoryId) => {
     try {
-      setLoading(true);
-      const products = await loadCategoryProducts(categoryId);
-      setProductData(products);
+      const productsData = await loadProductsByCategory(categoryId);
+      setProducts(productsData);
     } catch (error) {
-      console.error("Error fetching products:", error);
-    } finally {
-      setLoading(false);
+      console.log("Error fetching products: ", error);
     }
-  };
-
-  const handleCategorySelect = (categoryId) => {
-    setSelectedCategory(categoryId);
   };
 
   const handleAddCategoryClick = () => {
@@ -65,18 +47,9 @@ const MenuPage = () => {
     setIsModalOpen(false);
   };
 
-  const handleCategorySubmit = async (newCategory) => {
-    try {
-      setLoading(true);
-      const result = await createCategory(newCategory.name, newCategory.image);
-      setCategoryData((prevCategoryData) => [...prevCategoryData, result]);
-      setIsModalOpen(false);
-      console.log("Category added successfully:", result);
-    } catch (error) {
-      console.error("Error adding category:", error);
-    } finally {
-      setLoading(false);
-    }
+  const handleCategorySelect = (categoryId) => {
+    setSelectedCategory(categoryId);
+    fetchProducts(categoryId);
   };
 
   return (
@@ -84,21 +57,39 @@ const MenuPage = () => {
       <div className="category-section">
         <button onClick={handleAddCategoryClick}>Add New Category</button>
         <CategoryList
-          categories={categoryData}
+          categories={categories}
           selectedCategory={selectedCategory}
           onCategorySelect={handleCategorySelect}
-          loading={loading}
         />
       </div>
-      <div className="product-list">
-        {productData.map((product) => (
-          <ProductCard key={product.product_id} product={product} />
-        ))}
+      <div className="product-section">
+        <h1 className="category-title">
+          {selectedCategory
+            ? categories.find((cat) => cat.category_id === selectedCategory)
+                ?.name
+            : "Select a Category"}
+        </h1>
+        {selectedCategory && (
+          <Link
+            to={`/Menu/create-product/${selectedCategory}`}
+            className="add-product-button"
+          >
+            Add New Product
+          </Link>
+        )}
+        <div className="product-list">
+          {products.length > 0 ? (
+            products.map((product) => (
+              <ProductCard key={product.product_id} product={product} />
+            ))
+          ) : (
+            <p>No products available for this category.</p>
+          )}
+        </div>
       </div>
       <CategoryFormModal
         isOpen={isModalOpen}
         onClose={handleModalClose}
-        onSubmit={handleCategorySubmit}
         loading={loading}
       />
     </div>
