@@ -1,4 +1,4 @@
-import { Client, Account, ID, Databases, Query } from "appwrite";
+import { Client, Account, ID, Databases, Storage, Query } from "appwrite";
 import AppwriteConfig from "../constants/AppwriteConfig";
 
 const client = new Client();
@@ -8,6 +8,7 @@ client
   .setProject(AppwriteConfig.projectID);
 
 const account = new Account(client);
+const storage = new Storage(client);
 const databases = new Databases(client);
 
 // Auth
@@ -40,6 +41,54 @@ export const loadCategories = async () => {
   } catch (error) {
     console.error("Error in loading categories:", error);
     throw new Error(error.message || "Unknown error occurred");
+  }
+};
+
+export const createCategory = async ({ name, image, bucketID }) => {
+  try {
+    let imageUrl = null;
+
+    if (image) {
+      // Upload the image and get the URL
+      imageUrl = await uploadImage(bucketID, image);
+    }
+
+    const data = {
+      Name: name,
+      category_id: name, // Using category name as the category_id
+      image_url: imageUrl,
+    };
+
+    const cat = await databases.createDocument(
+      AppwriteConfig.databaseID,
+      AppwriteConfig.categoryCollectionID,
+      ID.unique(),
+      data
+    );
+
+    return cat;
+  } catch (error) {
+    console.log("🚀 ~ createCategory ~ error:", error);
+    throw new Error(error.message || "Unknown error occurred");
+  }
+};
+
+// Separate function to handle image upload
+const uploadImage = async (bucketID, image) => {
+  try {
+    const uploadedImage = await storage.createFile(
+      bucketID,
+      ID.unique(),
+      image
+    );
+    const imageUrl = storage.getFileView(
+      AppwriteConfig.bucketID,
+      uploadedImage.$id
+    );
+    return imageUrl;
+  } catch (error) {
+    console.error("Error uploading image:", error);
+    throw new Error("Image upload failed");
   }
 };
 

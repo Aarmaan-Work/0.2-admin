@@ -3,8 +3,13 @@ import { Link } from "react-router-dom";
 import CategoryList from "../components/CategoryList";
 import CategoryFormModal from "../components/CategoryFormModal";
 import ProductCard from "../components/ProductCard";
-import { loadCategories, loadProductsByCategory } from "../api/Appwrite";
+import {
+  loadCategories,
+  loadProductsByCategory,
+  createCategory,
+} from "../api/Appwrite";
 import "./MenuPage.css";
+import AppwriteConfig from "../constants/AppwriteConfig";
 
 const MenuPage = () => {
   const [categories, setCategories] = useState([]);
@@ -22,8 +27,8 @@ const MenuPage = () => {
       const categoriesData = await loadCategories();
       setCategories(categoriesData);
       if (categoriesData.length > 0) {
-        setSelectedCategory(categoriesData[0].category_id); // Use category_id here
-        fetchProducts(categoriesData[0].category_id); // Use category_id here
+        setSelectedCategory(categoriesData[0].category_id);
+        fetchProducts(categoriesData[0].category_id);
       }
     } catch (error) {
       console.log("Error fetching categories: ", error);
@@ -52,6 +57,19 @@ const MenuPage = () => {
     fetchProducts(categoryId);
   };
 
+  const handleCategorySubmit = async ({ name, image }) => {
+    try {
+      setLoading(true);
+      const bucketID = AppwriteConfig.storage_category_images;
+      await createCategory({ name, image, bucketID });
+      fetchCategories(); // Refresh categories after adding new one
+    } catch (error) {
+      console.error("Error creating category:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="menu-page">
       <div className="category-section">
@@ -78,19 +96,15 @@ const MenuPage = () => {
           </Link>
         )}
         <div className="product-list">
-          {products.length > 0 ? (
-            products.map((product) => (
-              <ProductCard key={product.product_id} product={product} />
-            ))
-          ) : (
-            <p>No products available for this category.</p>
-          )}
+          {products.map((product) => (
+            <ProductCard key={product.product_id} product={product} />
+          ))}
         </div>
       </div>
       <CategoryFormModal
         isOpen={isModalOpen}
         onClose={handleModalClose}
-        loading={loading}
+        onSubmit={handleCategorySubmit}
       />
     </div>
   );
