@@ -27,7 +27,7 @@ const MenuPage = () => {
       const categoriesData = await loadCategories();
       setCategories(categoriesData);
       if (categoriesData.length > 0) {
-        setSelectedCategory(categoriesData[0].category_id);
+        setSelectedCategory(categoriesData[0].id);
         fetchProducts(categoriesData[0].category_id);
       }
     } catch (error) {
@@ -52,8 +52,9 @@ const MenuPage = () => {
     setIsModalOpen(false);
   };
 
-  const handleCategorySelect = (categoryId) => {
-    setSelectedCategory(categoryId);
+  const handleCategorySelect = (categoryId, docID) => {
+    console.log("🚀 ~ handleCategorySelect ~ categoryId:", docID);
+    setSelectedCategory(docID);
     fetchProducts(categoryId);
   };
 

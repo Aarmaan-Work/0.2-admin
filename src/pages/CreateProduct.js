@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { createProduct } from "../api/Appwrite"; // Ensure this import is correct
 import "./CreateProduct.css";
-// import { createProduct } from "../api/Appwrite";
 
 const CreateProduct = () => {
   const { categoryID } = useParams(); // Extract categoryID from URL parameters
@@ -50,10 +50,11 @@ const CreateProduct = () => {
       ...product,
       price: parseFloat(product.price),
       volume: parseFloat(product.volume),
+      categories: [product.categoryId],
     };
 
     try {
-      // await createProduct(newProduct);
+      await createProduct(newProduct); // Call the createProduct function
       console.log("Product created successfully");
       navigate("/Menu"); // Navigate to another page after creation
     } catch (error) {

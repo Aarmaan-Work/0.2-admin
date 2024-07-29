@@ -14,7 +14,7 @@ const CategoryList = ({ categories, selectedCategory, onCategorySelect }) => {
           className={`category-item ${
             category.category_id === selectedCategory ? "selected" : ""
           }`}
-          onClick={() => onCategorySelect(category.category_id)} // Use category_id
+          onClick={() => onCategorySelect(category.category_id, category.id)} // Use category_id
         >
           {category.name}
         </div>

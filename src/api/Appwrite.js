@@ -73,6 +73,48 @@ export const createCategory = async ({ name, image, bucketID }) => {
   }
 };
 
+export const createProduct = async ({
+  name,
+  price,
+  description,
+  volume,
+  image,
+  categories,
+}) => {
+  try {
+    let imageUrl = null;
+
+    if (image) {
+      // Upload the image and get the URL
+      imageUrl = await uploadImage(
+        AppwriteConfig.storage_product_images,
+        image
+      );
+    }
+
+    const data = {
+      name,
+      price,
+      description,
+      volume,
+      image_uri: imageUrl,
+      categories,
+    };
+
+    const result = await databases.createDocument(
+      AppwriteConfig.databaseID,
+      AppwriteConfig.itemsCollectionID,
+      ID.unique(),
+      data
+    );
+
+    return result;
+  } catch (error) {
+    console.log("🚀 ~ createProduct ~ error:", error);
+    throw new Error("Error Creating Product");
+  }
+};
+
 // Separate function to handle image upload
 const uploadImage = async (bucketID, image) => {
   try {
@@ -81,10 +123,7 @@ const uploadImage = async (bucketID, image) => {
       ID.unique(),
       image
     );
-    const imageUrl = storage.getFileView(
-      AppwriteConfig.bucketID,
-      uploadedImage.$id
-    );
+    const imageUrl = storage.getFileView(bucketID, uploadedImage.$id);
     return imageUrl;
   } catch (error) {
     console.error("Error uploading image:", error);
