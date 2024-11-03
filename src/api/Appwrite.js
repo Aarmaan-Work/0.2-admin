@@ -171,3 +171,99 @@ export const loadProductsByCategory = async (categoryID) => {
     throw new Error(error.message || "Unknown error occurred");
   }
 };
+
+export const newOrdersCheck = async () => {
+  try {
+    // Fetch the current newOrders document
+    const newOrderDocument = await databases.getDocument(
+      AppwriteConfig.databaseID,
+      AppwriteConfig.newOrderCollectionID,
+      AppwriteConfig.newOrderDocID // Ensure this is the correct document ID for newOrders
+    );
+
+    console.log("Fetched newOrders document:", newOrderDocument);
+
+    // Check if newOrders is greater than 0
+    if (newOrderDocument.newOrders > 0) {
+      console.log(`New orders detected: ${newOrderDocument.newOrders}`);
+
+      // Call a function to process new orders, passing the array of order IDs
+      processNewOrders(newOrderDocument.orderIds);
+    }
+  } catch (error) {
+    console.error("Error fetching new orders document:", error);
+  }
+};
+
+// Function to process new orders
+const processNewOrders = async () => {
+  try {
+    // Step 1: Fetch new order IDs
+    const newOrdersDoc = await databases.getDocument(
+      AppwriteConfig.databaseID,
+      AppwriteConfig.newOrderCollectionID,
+      AppwriteConfig.newOrderDocID
+    );
+
+    const orderIds = newOrdersDoc.orderIds || [];
+    if (orderIds.length === 0) {
+      console.log("No new orders to process.");
+      return;
+    }
+
+    console.log("Processing orders:", orderIds);
+
+    for (let orderId of orderIds) {
+      // Step 2: Fetch each order by its ID
+      const order = await databases.getDocument(
+        AppwriteConfig.databaseID,
+        AppwriteConfig.orderCollectionID,
+        orderId
+      );
+
+      // Example processing logic
+      console.log("Processing order:", order);
+
+      // Step 3: Update the order status or perform other tasks
+      await databases.updateDocument(
+        AppwriteConfig.databaseID,
+        AppwriteConfig.orderCollectionID,
+        orderId,
+        { orderStatus: "preparing" }
+      );
+    }
+
+    // Step 4: Reset the newOrders count and clear the orderIds array after processing
+    await databases.updateDocument(
+      AppwriteConfig.databaseID,
+      AppwriteConfig.newOrderCollectionID,
+      AppwriteConfig.newOrderDocID,
+      {
+        newOrders: 0,
+        orderIds: [], // Clear the order IDs array
+      }
+    );
+
+    console.log("New orders processed successfully and newOrders reset.");
+  } catch (error) {
+    console.error("Error processing orders:", error);
+  }
+};
+
+// Call the check function every 2 minutes (120000 milliseconds)
+setInterval(newOrdersCheck, 120000);
+
+export const loadLiveOrders = async () => {
+  try {
+    const result = await databases.listDocuments(
+      AppwriteConfig.databaseID,
+      AppwriteConfig.orderCollectionID
+    );
+
+    return result;
+  } catch (error) {
+    console.log("🚀 ~ loadOrders ~ error:", error);
+  }
+};
+
+// TODO: Use the new order info and disyplay it.
