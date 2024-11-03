@@ -13,7 +13,7 @@ const Sidebar = () => {
           <a href="/Menu">Menu</a>
         </li>
         <li>
-          <a href="/page2">Page 2</a>
+          <a href="/Live-Orders">Orders</a>
         </li>
         <li>
           <a href="/page3">Page 3</a>

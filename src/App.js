@@ -5,6 +5,7 @@ import Sidebar from "./components/Sidebar";
 import HomePage from "./pages/Home";
 import MenuPage from "./pages/Menu";
 import CreateProduct from "./pages/CreateProduct";
+import LiveOrders from "./pages/LiveOrders";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
               path="/Menu/create-product/:categoryID"
               element={<CreateProduct />}
             />
+            <Route path="/Live-Orders" element={<LiveOrders />} />
           </Routes>
         </div>
       </div>
