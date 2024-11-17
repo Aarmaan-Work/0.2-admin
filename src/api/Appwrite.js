@@ -229,7 +229,7 @@ const processNewOrders = async () => {
         AppwriteConfig.databaseID,
         AppwriteConfig.orderCollectionID,
         orderId,
-        { orderStatus: "preparing" }
+        { status: "preparing" }
       );
     }
 
@@ -266,4 +266,15 @@ export const loadLiveOrders = async () => {
   }
 };
 
-// TODO: Use the new order info and disyplay it.
+export const updateOrderStatus = async (docId, newStatus) => {
+  try {
+    const result = await databases.updateDocument(
+      AppwriteConfig.databaseID,
+      AppwriteConfig.orderCollectionID,
+      docId,
+      { status: newStatus } // Use newStatus dynamically
+    );
+  } catch (error) {
+    console.error("Error updating order status:", error);
+  }
+};
