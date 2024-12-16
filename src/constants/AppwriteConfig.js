@@ -8,6 +8,7 @@ const AppwriteConfig = {
   orderCollectionID: "all_orders",
   newOrderCollectionID: "66e6d0a6002452dd430c",
   newOrderDocID: "66e6ddc00005353f2156",
+  OffersCollectionID: "673a7df20001bfe255eb",
   storage_category_images: "660bf05c7429e06a9bd0",
   storage_product_images: "660be67b76d303faa7f0",
 };

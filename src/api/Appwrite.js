@@ -131,6 +131,27 @@ const uploadImage = async (bucketID, image) => {
   }
 };
 
+export const loadProducts = async () => {
+  try {
+    // Fetch documents from the database
+    const result = await databases.listDocuments(
+      AppwriteConfig.databaseID,
+      AppwriteConfig.itemsCollectionID
+    );
+
+    // Ensure you are extracting the `id` and `name` correctly from the response.
+    const products = result.documents.map((doc) => ({
+      id: doc.$id, // Make sure the ID field is correctly accessed
+      name: doc.name, // Assuming the document has a `name` field
+    }));
+
+    return products; // Return the list of products with correct id and name
+  } catch (error) {
+    console.error("🚀 ~ loadProducts ~ error:", error);
+    throw new Error(error.message || "Unknown error occurred");
+  }
+};
+
 export const loadProductsByCategory = async (categoryID) => {
   if (!categoryID) {
     throw new Error("Invalid category ID");
@@ -276,5 +297,22 @@ export const updateOrderStatus = async (docId, newStatus) => {
     );
   } catch (error) {
     console.error("Error updating order status:", error);
+  }
+};
+
+// Offers
+export const CreateOffers = async (offerInfo) => {
+  try {
+    const result = await databases.createDocument(
+      AppwriteConfig.databaseID,
+      AppwriteConfig.OffersCollectionID,
+      ID.unique(),
+      offerInfo
+    );
+    console.log("Offer created successfully:", result);
+    return result;
+  } catch (error) {
+    console.error("Error creating offer:", error);
+    throw error;
   }
 };

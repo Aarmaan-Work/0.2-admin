@@ -6,6 +6,8 @@ import HomePage from "./pages/Home";
 import MenuPage from "./pages/Menu";
 import CreateProduct from "./pages/CreateProduct";
 import LiveOrders from "./pages/LiveOrders";
+import OffersPage from "./pages/OffersPage";
+import OfferCreationPage from "./pages/OfferCreationPage";
 
 function App() {
   return (
@@ -21,6 +23,8 @@ function App() {
               element={<CreateProduct />}
             />
             <Route path="/Live-Orders" element={<LiveOrders />} />
+            <Route path="/Offers-Page" element={<OffersPage />} />
+            <Route path="/Offer-Creation" element={<OfferCreationPage />} />
           </Routes>
         </div>
       </div>

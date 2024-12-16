@@ -1,0 +1,100 @@
+.offers-page {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.templates-list {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.template-card {
+  border: 1px solid #ccc;
+  padding: 15px;
+  border-radius: 5px;
+  width: 250px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.template-card h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.template-card p {
+  font-size: 14px;
+  color: #666;
+}
+
+.template-card button {
+  margin-top: 10px;
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.template-card button:hover {
+  background-color: #0056b3;
+}
+
+.offer-configurator {
+  max-width: 400px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.offer-configurator h2 {
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.offer-configurator .form-group {
+  margin-bottom: 15px;
+}
+
+.offer-configurator label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 5px;
+  color: #666;
+}
+
+.offer-configurator input {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+.offer-configurator .save-button {
+  background-color: #28a745;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.offer-configurator .save-button:hover {
+  background-color: #218838;
+}
+
+.offer-configurator .cancel-button {
+  background-color: #dc3545;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.offer-configurator .cancel-button:hover {
+  background-color: #c82333;
+}
